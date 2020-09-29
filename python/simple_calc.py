@@ -70,12 +70,6 @@ def get_user_input():
     """
     Function that prompts users for 2 numbers and an operand to execute on them
     """
-    # make sure we get the correct "input" function based onw hether we are in Python 2 or 3
-    try:
-        input = raw_input
-    except:
-        pass
-    
     op_dict = {'+' : operator.add, '-': operator.sub, '*': operator.mul, '/': operator.truediv, '<<': operator.lshift, '>>': operator.rshift, '%': operator.mod, '^': operator.pow}
     
     try:
@@ -106,6 +100,12 @@ def get_user_input():
 # ------------------------------------------------------------------------
 
 if __name__ == "__main__":
+    # make sure we get the correct "input" function based onw hether we are in Python 2 or 3
+    try:
+        input = raw_input
+    except:
+        pass
+    
     # keep prompting user for a calculation
     while True:
         (num1, num2, op) = get_user_input()
