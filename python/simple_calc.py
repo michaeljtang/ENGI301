@@ -69,6 +69,9 @@ import operator
 def get_user_input():
     """
     Function that prompts users for 2 numbers and an operand to execute on them
+    
+    Inputs: N/A
+    Returns: a tuple containing 2 numbers, and the operation to be executed with them
     """
     op_dict = {'+' : operator.add, '-': operator.sub, '*': operator.mul, '/': operator.truediv, '<<': operator.lshift, '>>': operator.rshift, '%': operator.mod, '^': operator.pow}
     
