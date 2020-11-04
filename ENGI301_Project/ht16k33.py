@@ -97,30 +97,31 @@ HT16K33_BRIGHTNESS_DARKEST  = 0x00
 # ------------------------------------------------------------------------
 class HT16K33():
     """ Class to manage a HT16K33 I2C display """
-    bus = None
+    bus     = None
     address = None
     command = None
     
     def __init__(self, bus, address=0x70):
         """ Initialize variables and set up display """
-        self.bus = bus
+        self.bus     = bus
         self.address = address
-        self.command = f"/usr/sbin/i2cset -y {self.bus} {self.address}"
-
-        self.setup()
+        self.command = "/usr/sbin/i2cset -y {0} {1}".format(bus, address)
         
+        self.setup(blink=HT16K33_BLINK_OFF, brightness=HT16K33_BRIGHTNESS_HIGHEST)
+    
     # End def
     
-    def setup(self):
-        # i2cset -y 0 0x70 0x21
+    def setup(self, blink, brightness):
+        """Initialize the display itself"""
+        # i2cset -y 1 0x70 0x21
         os.system("{0} {1}".format(self.command, (HT16K33_SYSTEM_SETUP | HT16K33_OSCILLATOR)))
-        # i2cset -y 0 0x70 0x81
-        os.system("{0} {1}".format(self.command, (HT16K33_BLINK_CMD | HT16K33_BLINK_OFF | HT16K33_BLINK_DISPLAYON)))
-        # i2cset -y 0 0x70 0xEF
-        os.system("{0} {1}".format(self.command, (HT16K33_BRIGHTNESS_CMD | HT16K33_BRIGHTNESS_HIGHEST)))
+        # i2cset -y 1 0x70 0x81
+        os.system("{0} {1}".format(self.command, (HT16K33_BLINK_CMD | blink | HT16K33_BLINK_DISPLAYON)))
+        # i2cset -y 1 0x70 0xEF
+        os.system("{0} {1}".format(self.command, (HT16K33_BRIGHTNESS_CMD | brightness)))
 
-    
     # End def    
+
 
     def encode(self, data, double_point=False):
         """Encode data to TM1637 format.
@@ -141,7 +142,7 @@ class HT16K33():
                     ret_val = HEX_DIGITS[data]
         except:
             raise ValueError("Digit value must be between 0 and 15.")
-
+    
         return ret_val
 
     # End def
@@ -154,15 +155,32 @@ class HT16K33():
     # End def
 
 
+    def set_digit_raw(self, digit_number, data, double_point=False):
+        """Update the given digit of the display using raw data value"""
+        os.system("{0} {1} {2}".format(self.command, DIGIT_ADDR[digit_number], data))    
+
+    # End def
+
+
+    def set_colon(self, enable):
+        """Set the colon on the display."""
+        if enable:
+            os.system("{0} {1} {2}".format(self.command, COLON_ADDR, 0x02))
+        else:
+            os.system("{0} {1} {2}".format(self.command, COLON_ADDR, 0x00))
+
+    # End def        
+
+
     def clear(self):
         """Clear the display to read '0000'"""
-        os.system("{0} {1} {2}".format(self.command, COLON_ADDR, 0x0))
-        
+        self.set_colon(False)
+
         self.set_digit(3, 0)
         self.set_digit(2, 0)
         self.set_digit(1, 0)
         self.set_digit(0, 0)
-        
+
     # End def
 
 
@@ -175,15 +193,13 @@ class HT16K33():
         
         Will throw a ValueError if number is not between 0 and 9999.
         """
-        self.clear()
-        if value < 0 or value > 9999:
-            raise ValueError("Number out of range")
-    
-        idx = 3
-        while (value != 0):
-            self.set_digit(idx, value % 10)
-            value //= 10
-            idx -= 1
+        if ((value < 0) or (value > 9999)):
+            raise ValueError("Value is not between 0 and 9999")
+        
+        self.set_digit(3, (value % 10))
+        self.set_digit(2, (value // 10) % 10)
+        self.set_digit(1, (value // 100) % 10)
+        self.set_digit(0, (value // 1000) % 10)
 
     # End def
 
@@ -202,7 +218,7 @@ if __name__ == '__main__':
     print("Test HT16K33 Display:")
     
     display = HT16K33(1, 0x70)
-    
+
     for i in range(0, 10):
         display.update(i)
         time.sleep(delay)
@@ -218,6 +234,13 @@ if __name__ == '__main__':
     for i in range(0, 10000, 1000):
         display.update(i)
         time.sleep(delay)
+
+    for value in [0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x00]:
+        display.set_digit_raw(0, value)
+        time.sleep(delay)
+
+    display.set_colon(True)
+    time.sleep(1)
 
     display.clear()    
     print("Test Finished.")

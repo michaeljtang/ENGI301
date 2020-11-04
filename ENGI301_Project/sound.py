@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 import Adafruit_BBIO.ADC as ADC
 import time
+import threading
 
 
 class Note():

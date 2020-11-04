@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from sound import *
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.ADC as ADC
+import threading
 
 import ht16k33 as HT16K33
 
@@ -59,16 +60,18 @@ class MusicBox():
     # pin corresponding to switch
     switch = None
     
+    # object representing 7-segment display
+    
     # list of possible notes
     notes = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
     
-    def __init__(self, speaker_0="P1_36", speaker_1="P1_33", speaker_2="P2_1", C="P1_17", D="P1_19", E="P1_21", F="P1_23", G="P1_25", A="P1_27", B="P2_36", switch="P2_2"):
+    def __init__(self, speaker_0="P1_36", speaker_1="P1_33", speaker_2="P2_1", C="P1_17", D="P1_19", E="P1_21", F="P1_23", G="P1_25", A="P1_27", B="P2_36", switch="P2_2", i2c_bus=1, i2c_address=0x70):
+        # initialize speaker pins
         self.speaker_0 = speaker_0
         self.speaker_1 = speaker_1
         self.speaker_2 = speaker_2
-        this.note_pins['C'] = C
-        this.note_pins['C'] = C
 
+        # initialize note pins
         self.C = C
         self.D = D
         self.E = E
@@ -76,6 +79,12 @@ class MusicBox():
         self.G = G
         self.A = A
         self.B = B
+        
+        # initialize switch pin
+        self.switch = switch
+        
+        # initialize 7-segment display
+        self.display = HT16K33.HT16K33(i2c_bus, i2c_address)
         
         self._setup()
     
@@ -92,7 +101,8 @@ class MusicBox():
     
     def run(self):
         # only start running music box if switch is on
-        while(self.check_switch())):
+        while(self.check_switch()):
+            pass
             # turn on motor
             
             # check each input pin to see if certain notes are being played
@@ -107,12 +117,15 @@ class MusicBox():
         """
         return (GPIO.input(self.switch) == 1)
         
-    def set_display_dash(self):
+        
+    def set_display_off(self):
         """
         Set display to "off"
         """
-        self.display.set_digit_raw(0, 0x40)        # "-"
-        self.display.set_digit_raw(1, 0x40)        # "-"
-        self.display.set_digit_raw(2, 0x40)        # "-"
-        self.display.set_digit_raw(3, 0x40)        # "-"
+        self.display.set_digit_raw(0, 0x3F)        # "O"
+        self.display.set_digit_raw(1, 0x71)        # "F"
+        self.display.set_digit_raw(2, 0x71)        # "F"
+        self.display.set_digit_raw(3, 0x00)        # " "
         
+if __name__ == '__main__':
+    test = MusicBox()
