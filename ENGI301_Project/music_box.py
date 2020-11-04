@@ -41,18 +41,19 @@ import ht16k33 as HT16K33
 # ------------------------------------------------------------------------
 # Constants
 # ------------------------------------------------------------------------
+THRESHOLD = 50
 
+# ------------------------------------------------------------------------
+# Global variables
+# ------------------------------------------------------------------------
+on = False
 
 class MusicBox():
-    # note buffers for each speaker
-    buffer_0 = []
-    buffer_1 = []
-    buffer_2 = []
-    
-    # pins corresponding to each speaker
+    # pins corresponding to each speaker, and a dictionary for storing each speaker's threads
     speaker_0 = None
     speaker_1 = None
     speaker_2 = None
+    speaker_threads = []
     
     # dict to store pins corresponding to each note
     note_pins = {}
@@ -62,9 +63,6 @@ class MusicBox():
     
     # object representing 7-segment display
     
-    # list of possible notes
-    notes = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-    
     def __init__(self, speaker_0="P1_36", speaker_1="P1_33", speaker_2="P2_1", C="P1_17", D="P1_19", E="P1_21", F="P1_23", G="P1_25", A="P1_27", B="P2_36", switch="P2_2", i2c_bus=1, i2c_address=0x70):
         # initialize speaker pins
         self.speaker_0 = speaker_0
@@ -72,13 +70,13 @@ class MusicBox():
         self.speaker_2 = speaker_2
 
         # initialize note pins
-        self.C = C
-        self.D = D
-        self.E = E
-        self.F = F
-        self.G = G
-        self.A = A
-        self.B = B
+        self.note_pins['A'] = A
+        self.note_pins['B'] = B
+        self.note_pins['C'] = C
+        self.note_pins['D'] = D
+        self.note_pins['E'] = E
+        self.note_pins['F'] = F
+        self.note_pins['G'] = G
         
         # initialize switch pin
         self.switch = switch
@@ -97,15 +95,41 @@ class MusicBox():
         
         # Initialize Analog Inputs
         ADC.setup()
+        
+        # Setup speaker threads into a dictionary
+        self.speaker_threads = [PlayNote(self.speaker_0), PlayNote(self.speaker_1), PlayNote(self.speaker_2)]
+        for thread in self.speaker_threads:
+            thread.start()
             
     
     def run(self):
         # only start running music box if switch is on
         while(self.check_switch()):
-            pass
             # turn on motor
             
-            # check each input pin to see if certain notes are being played
+            # check each input pin to see if certain notes are being played (need 4 consecutive values to be high)
+            on = []
+            for note in note_pins.keys():
+                if self.check_threshold(self.note_pins[note]):
+                    on.append(Note(note))
+                    
+            # only take first 3 notes detected
+            for i, note in enumerate(on[:3]):
+                speaker_threads[i].add_note(note)
+            
+    
+    def check_threshold(self, pin):
+        """
+        Checks if an input has hit under threshold voltage (ie. it is toggled on when
+        voltage is low enough
+        
+        Input: analog input pin to check
+        Output: true if input has hit threshold voltage
+        """
+        measured = []
+        for i in range(3):
+            measured.append(ADC.read_raw(pin))
+        return min(measured) <= THRESHOLD
         
 
     def check_switch(self):
@@ -127,5 +151,36 @@ class MusicBox():
         self.display.set_digit_raw(2, 0x71)        # "F"
         self.display.set_digit_raw(3, 0x00)        # " "
         
+class StartBox(threading.Thread):
+    button = None
+    # False corresponds to off, True corresponds to on
+    prev_state = False
+    
+    def __init__(self, button):
+        threading.Thread.__init__(self)
+        
+    def run(self):
+        while not self.stop:
+            # check if button is pressed
+            if GPIO.input(self.button) == 1:
+                # if so, flip the state
+                if prev_state == False:
+                    prev_state = True
+                else:
+                    prev_state = False
+                    
+                    
+                    
+            if prev_state == False and GPIO.input(self.button) == 1:
+                
+            
+            
+    
+    def end(self):
+        """
+        Stops thread
+        """
+        self.stop = True
+
 if __name__ == '__main__':
     test = MusicBox()

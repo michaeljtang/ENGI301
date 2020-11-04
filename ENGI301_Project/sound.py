@@ -42,7 +42,6 @@ class Note():
     freq = None
     
     def __init__(self, note):
-        freq_to_note = {'C' : 261, 'D' : 294, 'E' : 330, 'F' : 249, 'G' : 392, A : 440, B : 494}
         this.freq = freq_to_note[note]
     
     def get_freq(self):
@@ -50,14 +49,28 @@ class Note():
         
         
 class PlayNote(threading.Thread):
-    note = None
-    speaker_pin = None
+    pin = None
+    freq_to_note = {'C' : 261, 'D' : 294, 'E' : 330, 'F' : 249, 'G' : 392, A : 440, B : 494}
+    stop = False
+    notes = []
     
-    def __init__(self, note, speaker_pin):
+    def __init__(self, speaker_pin):
         threading.Thread.__init__(self)
-        self.note = note
-        
+
     def run(self):
-        PWM.start(self.speaker_pin, 5, note.get_freq())
-        time.sleep(.5)
-        PWM.stop(self.speaker_pin)
+        while not self.stop:
+            if self.notes:
+                note = self.notes.pop(0)
+                PWM.start(self.pin, 5, freq_to_note[note])
+                time.sleep(0.5)
+            else:
+                PWM.stop(self.pin)
+    
+    def add_note(self, note):
+        self.notes.append(note)
+    
+    def end(self):
+        """Stop the thread"""
+        self.stop = True
+    # End def    
+    
