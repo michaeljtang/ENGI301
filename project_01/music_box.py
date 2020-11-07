@@ -59,9 +59,6 @@ class MusicBox():
     # dict to store pins corresponding to each note
     note_pins = {}
     
-    # pin corresponding to button
-    button = None
-    
     # object representing 7-segment display
     display = None
     
@@ -69,7 +66,7 @@ class MusicBox():
     motor = None
     motor_thread = None
     
-    def __init__(self, speaker_0="P1_36", speaker_1="P2_3", speaker_2="P2_1", C="P1_17", D="P1_19", E="P1_21", F="P1_23", G="P1_25", A="P1_27", B="P2_36", button="P2_2", i2c_bus=1, i2c_address=0x70, motor="P1_33"):
+    def __init__(self, speaker_0="P1_36", speaker_1="P2_3", speaker_2="P2_1", C="P1_17", D="P1_19", E="P1_21", F="P1_23", G="P1_25", A="P1_27", B="P2_36", i2c_bus=1, i2c_address=0x70, motor="P1_33"):
         # initialize speaker pins
         self.speaker_0 = speaker_0
         self.speaker_1 = speaker_1
@@ -84,9 +81,6 @@ class MusicBox():
         self.note_pins['F'] = F
         self.note_pins['G'] = G
         
-        # initialize switch pin
-        self.button = button
-        
         # initialize 7-segment display
         self.display = HT16K33.HT16K33(i2c_bus, i2c_address)
         
@@ -96,14 +90,12 @@ class MusicBox():
         # Initialize Display
         self.set_display_off()
         
-        # Initialize button
-        GPIO.setup(self.button, GPIO.IN)
-        
         # Initialize Analog Inputs
         ADC.setup()
         
         # Initialize Motor
-        this.motor_thread = RunMotor(this.motor)        
+        self.motor_thread = RunMotor(self.motor)       
+        self.motor_thread.start()
         
         # Setup speaker threads into a dictionary
         self.speaker_threads = [PlayNote(self.speaker_0), PlayNote(self.speaker_1), PlayNote(self.speaker_2)]
@@ -115,8 +107,7 @@ class MusicBox():
         # only start running music box if button has been pressed to on
         while(True):
             if music_box_on:
-                # turn on motor
-                this.motor_thread.start()
+                self.turn_on()
                 
                 # check each input pin to see if certain notes are being played (need 4 consecutive values to be high)
                 on = []
@@ -130,8 +121,6 @@ class MusicBox():
                 
             else:
                 self.turn_off()
-                
-            
     
     def check_threshold(self, pin):
         """
@@ -145,6 +134,15 @@ class MusicBox():
         for i in range(3):
             measured.append(ADC.read_raw(pin))
         return min(measured) <= THRESHOLD
+        
+    def set_display_on(self):
+        """
+        Set display to "on"
+        """
+        self.display.set_digit_raw(0, 0x6F)        # "G"
+        self.display.set_digit_raw(1, 0x3F)        # "O"
+        self.display.set_digit_raw(2, 0x00)        # " "
+        self.display.set_digit_raw(3, 0x00)        # " "
         
     def set_display_off(self):
         """
@@ -161,6 +159,13 @@ class MusicBox():
         
         # stop motor
         self.motor_thread.pause()
+        
+    def turn_on(self):
+        # set display to on
+        self.set_display_on()
+        
+        # start motor
+        self.motor_thread.run()
         
         
     def cleanup(self):
@@ -179,8 +184,12 @@ class BoxButton(threading.Thread):
     # False corresponds to off, True corresponds to on
     prev_state = False
     
-    def __init__(self, button):
+    def __init__(self, button="P2_2"):
         threading.Thread.__init__(self)
+        self.button = button
+        
+        # Initialize button
+        GPIO.setup(self.button, GPIO.IN)
         
     def run(self):
         while not self.stop:
@@ -192,7 +201,7 @@ class BoxButton(threading.Thread):
                     prev_state = True
                     music_box_on = True
                     
-                # if prev_state was true, then it was just turned off
+                # if prev_state was true, then it was fjust turned off
                 else:
                     prev_state = False
                     music_box_on = False
@@ -206,5 +215,5 @@ class BoxButton(threading.Thread):
 if __name__ == '__main__':
     box = MusicBox()
     button = BoxButton()
-    box.start()
-    button.start()
+    box.run()
+    button.start
