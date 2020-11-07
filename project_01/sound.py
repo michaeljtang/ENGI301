@@ -1,6 +1,6 @@
 """
 --------------------------------------------------------------------------
-Combination Lock
+Speaker Sound
 --------------------------------------------------------------------------
 License:   
 Copyright 2020 Michael Tang
@@ -38,28 +38,29 @@ import time
 import threading
         
 class PlayNote(threading.Thread):
-    pin = None
+    speaker = None
     freq_to_note = {'C' : 261, 'D' : 294, 'E' : 330, 'F' : 249, 'G' : 392, 'A' : 440, 'B': 494}
     stop = False
     notes = []
     
-    def __init__(self, speaker_pin):
+    def __init__(self, speaker):
         threading.Thread.__init__(self)
+        self.speaker = speaker
 
     def run(self):
         while not self.stop:
             if self.notes:
                 note = self.notes.pop(0)
-                PWM.start(self.pin, 5, freq_to_note[note])
+                PWM.start(self.speaker, 5, freq_to_note[note])
                 time.sleep(0.5)
             else:
-                PWM.stop(self.pin)
+                PWM.stop(self.speaker)
     
     def add_note(self, note):
         self.notes.append(note)
     
     def end(self):
-        """Stop the thread"""
+        """
+        Stop the thread
+        """
         self.stop = True
-    # End def    
-    

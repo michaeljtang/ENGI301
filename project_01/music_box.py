@@ -1,6 +1,6 @@
 """
 --------------------------------------------------------------------------
-Combination Lock
+Music Box
 --------------------------------------------------------------------------
 License:   
 Copyright 2020 Michael Tang
@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------
 """
 from sound import *
+from motor import *
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.ADC as ADC
 import threading
@@ -64,7 +65,11 @@ class MusicBox():
     # object representing 7-segment display
     display = None
     
-    def __init__(self, speaker_0="P1_36", speaker_1="P1_33", speaker_2="P2_1", C="P1_17", D="P1_19", E="P1_21", F="P1_23", G="P1_25", A="P1_27", B="P2_36", button="P2_2", i2c_bus=1, i2c_address=0x70):
+    # object representing motor
+    motor = None
+    motor_thread = None
+    
+    def __init__(self, speaker_0="P1_36", speaker_1="P1_33", speaker_2="P2_1", C="P1_17", D="P1_19", E="P1_21", F="P1_23", G="P1_25", A="P1_27", B="P2_36", button="P2_2", i2c_bus=1, i2c_address=0x70, motor="P2_3"):
         # initialize speaker pins
         self.speaker_0 = speaker_0
         self.speaker_1 = speaker_1
@@ -97,6 +102,9 @@ class MusicBox():
         # Initialize Analog Inputs
         ADC.setup()
         
+        # Initialize Motor
+        this.motor_thread = RunMotor(this.motor)        
+        
         # Setup speaker threads into a dictionary
         self.speaker_threads = [PlayNote(self.speaker_0), PlayNote(self.speaker_1), PlayNote(self.speaker_2)]
         for thread in self.speaker_threads:
@@ -108,6 +116,7 @@ class MusicBox():
         while(True):
             if music_box_on:
                 # turn on motor
+                this.motor_thread.start()
                 
                 # check each input pin to see if certain notes are being played (need 4 consecutive values to be high)
                 on = []
@@ -118,6 +127,10 @@ class MusicBox():
                 # only take first 3 notes detected
                 for i, note in enumerate(on[:3]):
                     speaker_threads[i].add_note(note)
+                
+            else:
+                self.turn_off()
+                
             
     
     def check_threshold(self, pin):
@@ -133,17 +146,6 @@ class MusicBox():
             measured.append(ADC.read_raw(pin))
         return min(measured) <= THRESHOLD
         
-
-    def check_switch(self):
-        """
-        Checks if switch is on or off
-        
-        Input: None
-        Output: True if switch is on, false otherwise
-        """
-        return (GPIO.input(self.switch) == 1)
-        
-        
     def set_display_off(self):
         """
         Set display to "off"
@@ -153,11 +155,26 @@ class MusicBox():
         self.display.set_digit_raw(2, 0x71)        # "F"
         self.display.set_digit_raw(3, 0x00)        # " "
         
-    def cleanup(self):
+    def turn_off(self):
+        # set display to off
         self.set_display_off()
         
+        # stop motor
+        self.motor_thread.pause()
         
-class StartBox(threading.Thread):
+        
+    def cleanup(self):
+        """
+        Clean up threads
+        """
+        # Stop speaker threads
+        for speaker_thread in speaker_threads:
+            speaker_thread.end()
+        
+        # Stop motor thread
+        self.motor_thread.end()
+        
+class BoxButton(threading.Thread):
     button = None
     # False corresponds to off, True corresponds to on
     prev_state = False
@@ -187,4 +204,7 @@ class StartBox(threading.Thread):
         self.stop = True
 
 if __name__ == '__main__':
-    test = MusicBox()
+    box = MusicBox()
+    button = BoxButton()
+    box.start()
+    button.start()
