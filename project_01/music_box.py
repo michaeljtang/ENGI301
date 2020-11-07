@@ -59,7 +59,7 @@ class MusicBox():
     # dict to store pins corresponding to each note
     note_pins = {}
     
-    # pin corresponding to switch
+    # pin corresponding to button
     button = None
     
     # object representing 7-segment display
@@ -69,7 +69,7 @@ class MusicBox():
     motor = None
     motor_thread = None
     
-    def __init__(self, speaker_0="P1_36", speaker_1="P1_33", speaker_2="P2_1", C="P1_17", D="P1_19", E="P1_21", F="P1_23", G="P1_25", A="P1_27", B="P2_36", button="P2_2", i2c_bus=1, i2c_address=0x70, motor="P2_3"):
+    def __init__(self, speaker_0="P1_36", speaker_1="P2_3", speaker_2="P2_1", C="P1_17", D="P1_19", E="P1_21", F="P1_23", G="P1_25", A="P1_27", B="P2_36", button="P2_2", i2c_bus=1, i2c_address=0x70, motor="P1_33"):
         # initialize speaker pins
         self.speaker_0 = speaker_0
         self.speaker_1 = speaker_1
@@ -97,7 +97,7 @@ class MusicBox():
         self.set_display_off()
         
         # Initialize button
-        GPIO.setup(self.switch, GPIO.IN)
+        GPIO.setup(self.button, GPIO.IN)
         
         # Initialize Analog Inputs
         ADC.setup()
@@ -112,7 +112,7 @@ class MusicBox():
             
     
     def run(self):
-        # only start running music box if switch is on
+        # only start running music box if button has been pressed to on
         while(True):
             if music_box_on:
                 # turn on motor
