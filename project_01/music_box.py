@@ -46,7 +46,7 @@ THRESHOLD = 50
 # ------------------------------------------------------------------------
 # Global variables
 # ------------------------------------------------------------------------
-on = False
+music_box_on = False
 
 class MusicBox():
     # pins corresponding to each speaker, and a dictionary for storing each speaker's threads
@@ -105,18 +105,19 @@ class MusicBox():
     
     def run(self):
         # only start running music box if switch is on
-        while(self.state = True):
-            # turn on motor
-            
-            # check each input pin to see if certain notes are being played (need 4 consecutive values to be high)
-            on = []
-            for note in note_pins.keys():
-                if self.check_threshold(self.note_pins[note]):
-                    on.append(Note(note))
-                    
-            # only take first 3 notes detected
-            for i, note in enumerate(on[:3]):
-                speaker_threads[i].add_note(note)
+        while(True):
+            if music_box_on:
+                # turn on motor
+                
+                # check each input pin to see if certain notes are being played (need 4 consecutive values to be high)
+                on = []
+                for note in note_pins.keys():
+                    if self.check_threshold(self.note_pins[note]):
+                        on.append(Note(note))
+                        
+                # only take first 3 notes detected
+                for i, note in enumerate(on[:3]):
+                    speaker_threads[i].add_note(note)
             
     
     def check_threshold(self, pin):
@@ -170,13 +171,14 @@ class StartBox(threading.Thread):
             if GPIO.input(self.button) == 1:
                 # if prev_state was false, then it was just turned on
                 if prev_state == False:
+                    # previous state now becomes on
                     prev_state = True
+                    music_box_on = True
+                    
                 # if prev_state was true, then it was just turned off
                 else:
                     prev_state = False
-                    
-                    
-                
+                    music_box_on = False
     
     def end(self):
         """

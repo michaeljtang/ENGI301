@@ -36,18 +36,6 @@ import Adafruit_BBIO.ADC as ADC
 import Adafruit_BBIO.PWM as PWM
 import time
 import threading
-
-
-class Note():
-    """Class that represents a single music note"""
-    freq = None
-    
-    def __init__(self, note):
-        this.freq = freq_to_note[note]
-    
-    def get_freq(self):
-        return self.freq
-        
         
 class PlayNote(threading.Thread):
     pin = None
