@@ -110,6 +110,8 @@ class MusicBox():
         # only start running music box if button has been pressed to on
         while(True):
             if music_box_on:
+                print("success")
+                
                 self.turn_on()
                 
                 # check each input pin to see if certain notes are being played (need 4 consecutive values to be high)
@@ -191,6 +193,7 @@ class BoxButton(threading.Thread):
     button = None
     # False corresponds to off, True corresponds to on
     prev_state = False
+    stop = False
     
     def __init__(self, button="P2_2"):
         threading.Thread.__init__(self)
@@ -200,19 +203,25 @@ class BoxButton(threading.Thread):
         GPIO.setup(self.button, GPIO.IN)
         
     def run(self):
+        # make sure we can set global variable
+        global music_box_on
+        
         while not self.stop:
             # check if button is pressed
-            if GPIO.input(self.button) == 1:
+            if GPIO.input(self.button) == 0:
                 # if prev_state was false, then it was just turned on
-                if prev_state == False:
+                if self.prev_state == False:
                     # previous state now becomes on
-                    prev_state = True
+                    self.prev_state = True
                     music_box_on = True
                     
                 # if prev_state was true, then it was fjust turned off
                 else:
-                    prev_state = False
+                    self.prev_state = False
                     music_box_on = False
+                    
+                # pause for a bit so it doesn't read a single click as multiple
+                time.sleep(0.2)
     
     def end(self):
         """
@@ -223,9 +232,9 @@ class BoxButton(threading.Thread):
 if __name__ == '__main__':
     box = MusicBox()
     button = BoxButton()
+    button.start()
     try:
         box.run()
-        button.start
     except KeyboardInterrupt:
         box.cleanup()
         button.end()
