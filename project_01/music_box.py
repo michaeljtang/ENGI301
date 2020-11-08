@@ -42,7 +42,7 @@ import ht16k33 as HT16K33
 # ------------------------------------------------------------------------
 # Constants
 # ------------------------------------------------------------------------
-THRESHOLD = 50
+THRESHOLD = 500
 
 # ------------------------------------------------------------------------
 # Global variables
@@ -110,15 +110,15 @@ class MusicBox():
         # only start running music box if button has been pressed to on
         while(True):
             if music_box_on:
-                print("success")
-                
                 self.turn_on()
                 
                 # check each input pin to see if certain notes are being played (need 4 consecutive values to be high)
                 on = []
                 for note in self.note_pins.keys():
                     if self.check_threshold(self.note_pins[note]):
-                        on.append(Note(note))
+                        on.append(note)
+                
+                print(on)
                         
                 # only take first 3 notes detected
                 for i, note in enumerate(on[:3]):
