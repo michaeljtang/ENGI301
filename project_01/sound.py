@@ -51,7 +51,7 @@ class PlayNote(threading.Thread):
         while not self.stop:
             if self.notes:
                 note = self.notes.pop(0)
-                PWM.start(self.speaker, 5, freq_to_note[note])
+                PWM.start(self.speaker, 5, self.freq_to_note[note])
                 time.sleep(0.5)
             else:
                 PWM.stop(self.speaker)
