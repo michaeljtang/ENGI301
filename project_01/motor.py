@@ -1,6 +1,6 @@
 """
 --------------------------------------------------------------------------
-Motor Functionality
+Continuous Servo Motor Functionality
 --------------------------------------------------------------------------
 License:   
 Copyright 2020 Michael Tang
@@ -30,7 +30,8 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------
-
+Python file that contains class to operate motor servo. Intended to work using
+any continuous rotation servo.
 """
 
 import Adafruit_BBIO.PWM as PWM
@@ -42,14 +43,22 @@ class RunMotor(threading.Thread):
     halt = True
     
     def __init__(self, motor):
+        """
+        Initializes thread and pin connected to continuous servo motor
+        """
         threading.Thread.__init__(self)
         self.motor = motor
     
     def run(self):
+        """
+        Servo runs by continuuously waiting for a stop signal
+        """
         # wait for stop to be signalled
         while True:
+            # if halt command is given, pause the motor's operation
             if self.halt:
                 PWM.stop(self.motor)
+            # if stop command is given, terminate the motor's operation
             if self.stop:
                 PWM.stop(self.motor)
                 break
