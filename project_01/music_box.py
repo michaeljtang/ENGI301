@@ -84,6 +84,9 @@ class MusicBox():
         # initialize 7-segment display
         self.display = HT16K33.HT16K33(i2c_bus, i2c_address)
         
+        # Initialize motor pin
+        self.motor = motor
+        
         self._setup()
     
     def _setup(self):
@@ -117,7 +120,7 @@ class MusicBox():
                         
                 # only take first 3 notes detected
                 for i, note in enumerate(on[:3]):
-                    speaker_threads[i].add_note(note)
+                    self.speaker_threads[i].add_note(note)
                 
             else:
                 self.turn_off()
@@ -167,17 +170,22 @@ class MusicBox():
         # start motor
         self.motor_thread.run()
         
-        
     def cleanup(self):
         """
         Clean up threads
         """
         # Stop speaker threads
-        for speaker_thread in speaker_threads:
+        for speaker_thread in self.speaker_threads:
             speaker_thread.end()
         
         # Stop motor thread
         self.motor_thread.end()
+        
+        # Set Display to show program is complete
+        self.display.set_digit(0, 13)        # "D"
+        self.display.set_digit(1, 14)        # "E"
+        self.display.set_digit(2, 10)        # "A"
+        self.display.set_digit(3, 13)        # "D"
         
 class BoxButton(threading.Thread):
     button = None
@@ -215,5 +223,9 @@ class BoxButton(threading.Thread):
 if __name__ == '__main__':
     box = MusicBox()
     button = BoxButton()
-    box.run()
-    button.start
+    try:
+        box.run()
+        button.start
+    except KeyboardInterrupt:
+        box.cleanup()
+        button.end()
