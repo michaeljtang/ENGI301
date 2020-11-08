@@ -53,5 +53,3 @@ config-pin P2_11 i2c
 
 # Button
 config-pin P2_02 gpio
-
-## ^ we now have script we can run that will always set up pins for people_counter correctly

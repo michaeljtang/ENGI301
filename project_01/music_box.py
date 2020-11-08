@@ -30,8 +30,22 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------
+Software for running a programmable music box.
+
+Main Components used:
+  - HT16K33 Display
+  - 1 push button
+  - 3 speakers
+  - 1 Micro-size continuous rotation servo
+  - Copper plate
+
+Uses:
+  - HT16K33 display library developed by Erik Welsh
+  - motor.py (in folder) for running thread for continuous rotation servo
+  - speaker.py (in folder) for running thread for speaker
+
 """
-from sound import *
+from speaker import *
 from motor import *
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.ADC as ADC
@@ -42,15 +56,17 @@ import ht16k33 as HT16K33
 # ------------------------------------------------------------------------
 # Constants
 # ------------------------------------------------------------------------
+# threshold sets what voltages our pins need to hit for a sound to be played
 THRESHOLD = 500
 
 # ------------------------------------------------------------------------
 # Global variables
 # ------------------------------------------------------------------------
+# determines whether our music box is on or off; is controlled by the Button thread, and affects the MusicBox class
 music_box_on = False
 
 class MusicBox():
-    # pins corresponding to each speaker, and a dictionary for storing each speaker's threads
+    # pins corresponding to each speaker, and a list for storing each speaker's threads
     speaker_0 = None
     speaker_1 = None
     speaker_2 = None
@@ -67,6 +83,9 @@ class MusicBox():
     motor_thread = None
     
     def __init__(self, speaker_0="P1_36", speaker_1="P2_3", speaker_2="P2_1", C="P2_35", D="P1_19", E="P1_21", F="P1_23", G="P1_25", A="P1_27", B="P2_36", i2c_bus=1, i2c_address=0x70, motor="P1_33"):
+        """
+        Intializes variables to appropriate pins
+        """
         # initialize speaker pins
         self.speaker_0 = speaker_0
         self.speaker_1 = speaker_1
@@ -87,9 +106,13 @@ class MusicBox():
         # Initialize motor pin
         self.motor = motor
         
+        # setup all of the pins
         self._setup()
     
     def _setup(self):
+        """
+        Sets up device for initial use
+        """
         # Initialize Display
         self.set_display_off()
         
@@ -107,8 +130,11 @@ class MusicBox():
             
     
     def run(self):
-        # only start running music box if button has been pressed to on
+        """
+        Runs music box
+        """
         while(True):
+            # only start running music box if button has been pressed to on
             if music_box_on:
                 self.turn_on()
                 
@@ -117,13 +143,12 @@ class MusicBox():
                 for note in self.note_pins.keys():
                     if self.check_threshold(self.note_pins[note]):
                         on.append(note)
-                
-                print(on)
                         
-                # only take first 3 notes detected
+                # only take first 3 notes detected (as we have 3 speakers)
                 for i, note in enumerate(on[:3]):
                     self.speaker_threads[i].add_note(note)
-                
+            
+            # if button is pressed to off, then turn off the music box
             else:
                 self.turn_off()
     
@@ -136,6 +161,7 @@ class MusicBox():
         Output: true if input has hit threshold voltage
         """
         measured = []
+        # read 3 times to average out noise in pin reading
         for i in range(3):
             measured.append(ADC.read_raw(pin))
         return max(measured) <= THRESHOLD
@@ -159,6 +185,9 @@ class MusicBox():
         self.display.set_digit_raw(3, 0x00)        # " "
         
     def turn_off(self):
+        """
+        Sets music box to off mode
+        """
         # set display to off
         self.set_display_off()
         
@@ -166,6 +195,9 @@ class MusicBox():
         self.motor_thread.pause()
         
     def turn_on(self):
+        """
+        Sets music box to on mode
+        """
         # set display to on
         self.set_display_on()
         
@@ -183,6 +215,12 @@ class MusicBox():
         # Stop motor thread
         self.motor_thread.end()
         
+        # Clean up threads
+        main_thread = threading.currentThread()
+        for thread in threading.enumerate():
+            if thread is not main_thread:
+                thread.join()
+        
         # Set Display to show program is complete
         self.display.set_digit(0, 13)        # "D"
         self.display.set_digit(1, 14)        # "E"
@@ -196,6 +234,9 @@ class BoxButton(threading.Thread):
     stop = False
     
     def __init__(self, button="P2_2"):
+        """
+        Initialize thread as well as class fields to appropriate pins
+        """
         threading.Thread.__init__(self)
         self.button = button
         
@@ -203,6 +244,9 @@ class BoxButton(threading.Thread):
         GPIO.setup(self.button, GPIO.IN)
         
     def run(self):
+        """
+        Runs button by having it continuous checking for it to turn on/off
+        """
         # make sure we can set global variable
         global music_box_on
         
@@ -230,11 +274,21 @@ class BoxButton(threading.Thread):
         self.stop = True
 
 if __name__ == '__main__':
+    # Initialize all objects necessary to run music box
     box = MusicBox()
     button = BoxButton()
     button.start()
+    
     try:
         box.run()
+    # program terminates upon KeyBoard Interrupt
     except KeyboardInterrupt:
+        # Initiate cleanup 
         box.cleanup()
         button.end()
+        
+        # Stop threads
+        main_thread = threading.currentThread()
+        for thread in threading.enumerate():
+            if thread is not main_thread:
+                thread.join()

@@ -31,7 +31,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # --------------------------------------------------------------------------
 # 
-# Run People Counter in /var/lib/cloud9/ENGI301/people_counter
+# Run Music Box in /var/lib/cloud9/ENGI301/project_01
 # 
 # --------------------------------------------------------------------------
 cd /var/lib/cloud9/ENGI301/project_01
