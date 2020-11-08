@@ -39,19 +39,16 @@ import threading
 class RunMotor(threading.Thread):
     motor = None
     stop = False
-    pause = True
+    halt = True
     
     def __init__(self, motor):
         threading.Thread.__init__(self)
         self.motor = motor
     
     def run(self):
-        # start motor
-        PWM.start(self.motor, 10, 100)
-        
         # wait for stop to be signalled
         while True:
-            if self.pause:
+            if self.halt:
                 PWM.stop(self.motor)
             if self.stop:
                 PWM.stop(self.motor)
@@ -61,7 +58,15 @@ class RunMotor(threading.Thread):
         """
         Pause the motor
         """
-        self.pause = True
+        self.halt = True
+        
+    def unpause(self):
+        """
+        Unpause the motor
+        """
+        self.halt = False
+        # start motor
+        PWM.start(self.motor, 25, 400)
                 
     def end(self):
         """
