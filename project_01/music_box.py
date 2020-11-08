@@ -66,7 +66,7 @@ class MusicBox():
     motor = None
     motor_thread = None
     
-    def __init__(self, speaker_0="P1_36", speaker_1="P2_3", speaker_2="P2_1", C="P1_17", D="P1_19", E="P1_21", F="P1_23", G="P1_25", A="P1_27", B="P2_36", i2c_bus=1, i2c_address=0x70, motor="P1_33"):
+    def __init__(self, speaker_0="P1_36", speaker_1="P2_3", speaker_2="P2_1", C="P2_35", D="P1_19", E="P1_21", F="P1_23", G="P1_25", A="P1_27", B="P2_36", i2c_bus=1, i2c_address=0x70, motor="P1_33"):
         # initialize speaker pins
         self.speaker_0 = speaker_0
         self.speaker_1 = speaker_1
@@ -75,7 +75,7 @@ class MusicBox():
         # initialize note pins
         self.note_pins['A'] = A
         self.note_pins['B'] = B
-        self.note_pins['C'] = C
+        #self.note_pins['C'] = C
         self.note_pins['D'] = D
         self.note_pins['E'] = E
         self.note_pins['F'] = F
@@ -116,7 +116,7 @@ class MusicBox():
                 
                 # check each input pin to see if certain notes are being played (need 4 consecutive values to be high)
                 on = []
-                for note in note_pins.keys():
+                for note in self.note_pins.keys():
                     if self.check_threshold(self.note_pins[note]):
                         on.append(Note(note))
                         
@@ -138,7 +138,7 @@ class MusicBox():
         measured = []
         for i in range(3):
             measured.append(ADC.read_raw(pin))
-        return min(measured) <= THRESHOLD
+        return max(measured) <= THRESHOLD
         
     def set_display_on(self):
         """
@@ -170,7 +170,7 @@ class MusicBox():
         self.set_display_on()
         
         # start motor
-        self.motor_thread.run()
+        self.motor_thread.unpause()
         
     def cleanup(self):
         """
