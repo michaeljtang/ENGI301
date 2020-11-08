@@ -1,6 +1,6 @@
 """
 --------------------------------------------------------------------------
-Speaker Sound
+Speaker Sound Functionality
 --------------------------------------------------------------------------
 License:   
 Copyright 2020 Michael Tang
@@ -30,6 +30,8 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------
+Python threading class designed to provide speaker functionality. Designed to work
+with any speaker that operates using PWM.
 
 """
 import Adafruit_BBIO.ADC as ADC
@@ -44,10 +46,16 @@ class PlayNote(threading.Thread):
     notes = []
     
     def __init__(self, speaker):
+        """
+        Initialize thread and speaker pin
+        """
         threading.Thread.__init__(self)
         self.speaker = speaker
 
     def run(self):
+        """
+        Keep speaker on continuous loop, waiting for a new note to play
+        """
         while not self.stop:
             if self.notes:
                 note = self.notes.pop(0)
@@ -57,6 +65,9 @@ class PlayNote(threading.Thread):
                 PWM.stop(self.speaker)
     
     def add_note(self, note):
+        """
+        Adds a note to speaker's note buffer, which will be played as soon as possible
+        """
         self.notes.append(note)
     
     def end(self):
