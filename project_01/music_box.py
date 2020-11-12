@@ -82,7 +82,7 @@ class MusicBox():
     motor = None
     motor_thread = None
     
-    def __init__(self, speaker_0="P1_36", speaker_1="P2_3", speaker_2="P2_1", C="P2_35", D="P1_19", E="P1_21", F="P1_23", G="P1_25", A="P1_27", B="P2_36", i2c_bus=1, i2c_address=0x70, motor="P1_33"):
+    def __init__(self, speaker_0="P1_36", speaker_1="P2_3", speaker_2="P2_1", C="P1_27", D="P1_19", E="P1_21", F="P1_23", G="P1_25", A="P2_35", B="P2_36", i2c_bus=1, i2c_address=0x70, motor="P1_33"):
         """
         Intializes variables to appropriate pins
         """
@@ -92,9 +92,9 @@ class MusicBox():
         self.speaker_2 = speaker_2
 
         # initialize note pins
-        self.note_pins['A'] = A
+        #self.note_pins['A'] = A
         self.note_pins['B'] = B
-        #self.note_pins['C'] = C
+        self.note_pins['C'] = C
         self.note_pins['D'] = D
         self.note_pins['E'] = E
         self.note_pins['F'] = F
