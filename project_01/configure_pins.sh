@@ -41,7 +41,7 @@
 # --------------------------------------------------------------------------
 
 # PWMs
-config-pin P1_36 pwm    # not working for some reason
+config-pin P1_36 pwm    # for speaker
 config-pin P1_33 pwm    # for motor
 config-pin P2_01 pwm    # for speaker
 config-pin P2_03 pwm    # for speaker
