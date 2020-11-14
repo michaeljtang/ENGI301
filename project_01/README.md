@@ -16,7 +16,7 @@ https://www.hackster.io/michael-tang/programmable-music-box-1288ab
     - sudo apt-get install python3-pip
     - sudo pip install Adafruit_BBIO
 5. Change the permissions on the run script
-    - chmod 755 run_whack_a_mole.sh
+    - chmod 755 run
 6. Use Chron so that program will run on autoboot in the following steps
     - Navigate to your local cloud9 folder
     - Type "mkdir logs"
