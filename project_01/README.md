@@ -8,11 +8,19 @@ https://www.hackster.io/michael-tang/programmable-music-box-1288ab
 
 ### How To Run:
 1. Follow assembly instructions in above Hackster link to create physical music box
-2. Download this project_01 folder into the Cloud9 IDE on your own PocketBeagle
-3. Ensure you have the Python AdaFruit_BBIO package installed locally:
-    - sudo apt-get install build-essential python-dev python-setuptoolspython-pip python-smbus-y
-    - sudo apt-get install python-pip 
+2. Use the latest PocketBeagle image from BeagleBoard.org
+3. Download this project_01 folder from this repo, unzip, and then move into the Cloud9 IDE on your own PocketBeagle
+4. Ensure you have Python as well as the Python AdaFruit_BBIO package installed locally. If not, the steps to execute are:
+    - sudo apt-get install build-essential python-dev python-setuptools python-pip python-smbus-y
+    - sudo apt-get install python-pip
     - sudo apt-get install python3-pip
     - sudo pip install Adafruit_BBIO
-3. Navigate to this project_01 folder stored locally, and type "./run" into the command line
-4. Enjoy!
+5. Change the permissions on the run script
+    - chmod 755 run_whack_a_mole.sh
+6. Use Chron so that program will run on autoboot in the following steps
+    - Navigate to your local cloud9 folder
+    - Type "mkdir logs"
+    - Type "sudo crontab -e"
+    - Add to the end of the file "reboot sleep 30 && sh <full path to 'run'> > /var/lib/cloud9/logs/cronlog2>&1"
+7. Reboot the PocketBeagle, and the code will auto-run after 30 seconds of waiting! 
+8. Press the button to start!
