@@ -23,4 +23,5 @@ https://www.hackster.io/michael-tang/programmable-music-box-1288ab
     - Type "sudo crontab -e"
     - Add to the end of the file "reboot sleep 30 && sh <full path to 'run'> > /var/lib/cloud9/logs/cronlog2>&1"
 7. Reboot the PocketBeagle, and the code will auto-run after 30 seconds of waiting! 
-8. Press the button to start!
+8. Load in a hole punched paper in the music box, as demonstrated in the hackster.io above
+9. Press the button to start!
