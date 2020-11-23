@@ -32,7 +32,7 @@
 # --------------------------------------------------------------------------
 # 
 # Configure pins for digital Music Box:
-#   - PWM0 A / P1_36 (doesn't work for some reason)
+#   - PWM0 A / P1_36 (for speaker)
 #   - PWM0 B / P1_33 (for motor servo)
 #   - PWM1 A / P2_1 (for speaker)
 #   - PWM1 B / Pw_3 (for speaker)
@@ -41,7 +41,7 @@
 # --------------------------------------------------------------------------
 
 # PWMs
-config-pin P1_36 pwm    # not working for some reason
+config-pin P1_36 pwm    # for speaker
 config-pin P1_33 pwm    # for motor
 config-pin P2_01 pwm    # for speaker
 config-pin P2_03 pwm    # for speaker
