@@ -6,6 +6,6 @@
 1,N/A,HEADER_PINS       ,HEADER_PINS       ,HEADER_PINS       ,U$5,Standard Header Pins to act as floating analog inputs
 4,N/A,MOUNTING_HOLE     ,MOUNTING_HOLE     ,MOUNTING_HOLE     ,"MGT1, MGT2, MGT3, MGT4",Chassis Mounting Hole w/GND connection ability
 1,BeagleBoard,POCKETBEAGLE      ,POCKETBEAGLE      ,POCKETBEAGLE      ,U$1,Microcontroller running 1GHz ARM Cortex-A8
-1,Gikfun LYSB01E38OS7K-ELECTRNCS,PUSH_BUTTON       ,PUSH_BUTTON       ,BUTTON_12.5MM     ,SW1                                                                               ,Standard 12x12x7.3 mm Push Button
+1,Gikfun LYSB01E38OS7K-ELECTRNCS,PUSH_BUTTON       ,PUSH_BUTTON       ,BUTTON_12.5MM     ,SW1                                                                               ,Standard Push Button
 1,Sparkfun ROB10189,SERVO_ROB10189    ,SERVO_ROB10190,SERVO-X1          ,U1                                                                                ,Continuous Rotation Servo (Micro-Size)
 3,Adafruit P1898,SPEAKER_P1898     ,SPEAKER_P1899,SPEAKER           ,"U$2, U$3, U$4",PCB Mount Mini Speaker
