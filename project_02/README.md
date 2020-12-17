@@ -4,11 +4,11 @@ Project 02 involves creating a PCB for the programmable music box implemented an
 
 In addition to a Bill-of-Materials and and PCB Schematic, this directory contains the following folders:
 
-### EAGLE
+### /EAGLE
 This folder contains the Eagle files of my PCB, and include schematic, board, as well as a library with all parts used.
 
-### MFG
+### /MFG
 This folder contains all the Gerber manufacturing files needed to actually manufacture my PCB
 
-### docs
+### /docs
 This folder contains documentation relevant in the planning of my PCB, as well as images of the top and bottom views of my PCB (per the Gerber files).
