@@ -1728,7 +1728,7 @@ Duty Cycle: 25</text>
 <rectangle x1="178.181" y1="34.163" x2="180.975" y2="34.417" layer="200"/>
 <rectangle x1="178.943" y1="34.417" x2="179.451" y2="34.671" layer="200"/>
 <rectangle x1="179.705" y1="34.417" x2="180.213" y2="34.671" layer="200"/>
-<text x="174.498" y="23.368" size="0.508" layer="200" font="vector">C:/Users/micha/Downloads/logo.bmp</text>
+<text x="174.498" y="23.368" size="0.508" layer="200">C:/Users/micha/Downloads/logo.bmp</text>
 <wire x1="5.08" y1="36.576" x2="102.108" y2="36.576" width="0.1524" layer="97"/>
 <text x="6.858" y="29.972" size="5.08" layer="97">Mechanicals</text>
 </plain>
@@ -1759,11 +1759,11 @@ Duty Cycle: 25</text>
 </instance>
 <instance part="R1" gate="G$1" x="157.48" y="187.96" smashed="yes" rot="R90">
 <attribute name="NAME" x="154.94" y="185.42" size="1.778" layer="95" rot="R90"/>
-<attribute name="VALUE" x="154.94" y="190.5" size="1.778" layer="96" rot="R90"/>
+<attribute name="VALUE" x="162.56" y="185.42" size="1.778" layer="96" rot="R90"/>
 </instance>
 <instance part="R2" gate="G$1" x="167.64" y="187.96" smashed="yes" rot="R90">
 <attribute name="NAME" x="165.1" y="185.42" size="1.778" layer="95" rot="R90"/>
-<attribute name="VALUE" x="165.1" y="190.5" size="1.778" layer="96" rot="R90"/>
+<attribute name="VALUE" x="172.72" y="185.42" size="1.778" layer="96" rot="R90"/>
 </instance>
 <instance part="U2" gate="G$1" x="190.5" y="162.56" smashed="yes">
 <attribute name="NAME" x="190.5" y="190.5" size="1.778" layer="95" rot="MR180"/>
@@ -1789,7 +1789,7 @@ Duty Cycle: 25</text>
 </instance>
 <instance part="R4" gate="G$1" x="210.82" y="119.38" smashed="yes" rot="R90">
 <attribute name="NAME" x="208.28" y="116.84" size="1.778" layer="95" rot="R90"/>
-<attribute name="VALUE" x="208.28" y="121.92" size="1.778" layer="96" rot="R90"/>
+<attribute name="VALUE" x="215.9" y="116.84" size="1.778" layer="96" rot="R90"/>
 </instance>
 <instance part="SUPPLY6" gate="G$1" x="144.78" y="134.62" smashed="yes">
 <attribute name="VALUE" x="144.78" y="138.684" size="1.778" layer="96" align="center"/>
@@ -1799,15 +1799,15 @@ Duty Cycle: 25</text>
 </instance>
 <instance part="U$2" gate="G$1" x="33.02" y="94.234" smashed="yes" rot="R270">
 <attribute name="NAME" x="50.8" y="101.854" size="1.778" layer="95" rot="MR270"/>
-<attribute name="VALUE" x="50.8" y="94.234" size="1.778" layer="96" rot="R270"/>
+<attribute name="VALUE" x="22.86" y="94.234" size="1.778" layer="96" rot="R270"/>
 </instance>
 <instance part="U$3" gate="G$1" x="81.28" y="117.094" smashed="yes" rot="R270">
 <attribute name="NAME" x="99.06" y="124.714" size="1.778" layer="95" rot="MR270"/>
-<attribute name="VALUE" x="99.06" y="117.094" size="1.778" layer="96" rot="R270"/>
+<attribute name="VALUE" x="71.12" y="117.094" size="1.778" layer="96" rot="R270"/>
 </instance>
 <instance part="U$4" gate="G$1" x="81.28" y="71.374" smashed="yes" rot="R270">
 <attribute name="NAME" x="99.06" y="78.994" size="1.778" layer="95" rot="MR270"/>
-<attribute name="VALUE" x="99.06" y="71.374" size="1.778" layer="96" rot="R270"/>
+<attribute name="VALUE" x="71.12" y="71.374" size="1.778" layer="96" rot="R270"/>
 </instance>
 <instance part="U$5" gate="G$1" x="121.92" y="35.56" smashed="yes">
 <attribute name="NAME" x="116.84" y="71.12" size="1.778" layer="95" rot="MR180"/>
@@ -2132,6 +2132,10 @@ Duty Cycle: 25</text>
 </sheet>
 </sheets>
 <errors>
+<approved hash="101,1,17.78,15.24,MGT1,P$1,,,,"/>
+<approved hash="101,1,27.94,15.24,MGT2,P$1,,,,"/>
+<approved hash="101,1,38.1,15.24,MGT3,P$1,,,,"/>
+<approved hash="101,1,48.26,15.24,MGT4,P$1,,,,"/>
 <approved hash="104,1,185.42,182.88,U2,VCC,VDD_5V,,,"/>
 <approved hash="113,1,139.596,107.846,FRAME1,,,,,"/>
 </errors>
