@@ -1,0 +1,13 @@
+Partlist exported from C:/Users/micha/Documents/RICE/FALL20/ENGI 301/final_project/MusicBox/Eagle/music_box.sch at 12/16/2020 9:32 PM
+
+Qty Value             Device            Package           Parts                              Description                                    
+1   0.56_HEX_BACKPACK 0.56_HEX_BACKPACK 0.56_HEX_BACKPACK U2                                 0.56" LED HEX Backback - Adafruit HT16K33 -    
+3   1k                R_R0603           R0603             R1, R2, R4                         RESISTOR, American symbol                      
+1   COPPER_PLATE      COPPER_PLATE      COPPER_PLATE      U$6                                                                               
+6   FIDUCIAL          FIDUCIAL          FIDUCIAL_40MIL    FUD1, FUD2, FUD3, FUD4, FUD5, FUD6                                                
+1   HEADER_PINS       HEADER_PINS       HEADER_PINS       U$5                                                                               
+4   MOUNTING_HOLE     MOUNTING_HOLE     MOUNTING_HOLE     MGT1, MGT2, MGT3, MGT4             Chassis Mounting Hole w/GND connection ability 
+1   POCKETBEAGLE      POCKETBEAGLE      POCKETBEAGLE      U$1                                                                               
+1   PUSH_BUTTON       PUSH_BUTTON       BUTTON_12.5MM     SW1                                                                               
+1   SERVO_ROB10189    SERVO_ROB10189    SERVO-X1          U1                                                                                
+3   SPEAKER_P1898     SPEAKER_P1898     SPEAKER           U$2, U$3, U$4                                                                     
